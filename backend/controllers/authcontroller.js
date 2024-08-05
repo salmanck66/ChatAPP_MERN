@@ -32,7 +32,7 @@ export const signup = async (req, res) => {
       _id: newUser._id,
       fullName: newUser.fullName,
       userName: newUser.userName,
-      profilePic: newUser.profilePic,
+      profilePic: newUser.profilePic
     });
   } catch (error) {
     console.log("Error in signup", error.message);
@@ -41,12 +41,35 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const users = await User.find();
-  res.status(200).json(users);
+try {
+    const { userName, password } = req.body;
+    const user = await User.findOne({userName});
+    const passwordCorrect = await bcrypt.compare(password,user?.password || "")
+    if(!user || passwordCorrect == false)
+    {
+      return res.status(400).json({error:"user or pass is invalid"})
+    }
+    genToken(user._id,res)
+
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      userName: user.userName,
+      profilePic: user.profilePic,
+    })
+} catch (error) {
+  console.log(error.message,"In Login")
+  res.status(500).json({ error: "internal server error" });
+}
 };
 
 export const logout = (req, res) => {
-  console.log("log user");
-  res.send("logout");
+try {
+    res.cookie('jwt','',{maxAge:0})
+    res.status(200).json({ message: "logged out succesfully" });
+} catch (error) {
+  console.log(error.message,"Logout")
+  res.status(500).json({ error: "internal server error" });
+}
 };
 
