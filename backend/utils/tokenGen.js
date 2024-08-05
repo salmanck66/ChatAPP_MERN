@@ -8,7 +8,7 @@ const genToken = async (userid, res) => {
     maxAge: 15 * 24 * 60 * 60 * 1000,
     httpOnly: true, // to prevent CROSSSITRE ATTSCK
     sameSite: "strict", // to preveent csrf attafk
-    secure:true
+    secure:process.env.NODE_ENV !== "DEVELOPMENT"
     
   });
 };

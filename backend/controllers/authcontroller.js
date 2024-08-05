@@ -23,7 +23,7 @@ export const signup = async (req, res) => {
       userName,
       password: await bcrypt.hash(password, salt),
       gender: gender,
-      profilePic: gender == "male" ? boyPP : girlPP,
+      profilePic: gender === "male" ? boyPP : girlPP,
     });
 
     await newUser.save();
