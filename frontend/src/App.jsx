@@ -1,10 +1,7 @@
 export default function App() {
   return (
-    <>
-<button className="btn">
-  <span className="loading loading-spinner"></span>
-  loading
-</button>
-</>
+    <h1 className="text-4xl font-bold underline">
+      Hello world!
+    </h1>
   )
 }
