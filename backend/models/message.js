@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { required } from "yargs";
 
 const messageSchema = new mongoose.Schema(
   {
