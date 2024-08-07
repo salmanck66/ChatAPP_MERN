@@ -5,7 +5,7 @@ const login = () => {
     <div className="flex flex-col items-center justify-center min-w-80 sm:min-w-96  z-40">
       <div className="w-full p-4 rounded-lg shadow-md bg-orange-900 text-center glass backdrop-blur-3xl bg-opacity-0 bg-clip-padding">
         <h1 className="text-3xl text-gray-300 font-semibold">
-          Login <span className="text-red-700 emboss">chatWAER</span>
+          Login <span className="text-red-700 text-">chatWAER</span>
         </h1>
         <form className="pb-5" action="">
           <label className="label sm:ps-5" htmlFor="">
@@ -24,6 +24,10 @@ const login = () => {
             placeholder="Enter password"     
             className="input input-bordered input-success w-full max-w-xs"
           />
+          <div className="pt-4">
+          <a href="" className=" text-gray-600 hover:text-gray-500  hover:underline">Dont have account ?</a>
+          </div>
+           
         </form>
       </div>
     </div>
