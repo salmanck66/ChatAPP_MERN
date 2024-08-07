@@ -1,4 +1,6 @@
 import Login from "./pages/login/Login.jsx";
+import '@fontsource/poppins'; // Defaults to weight 400.
+
 import "./App.scss"
 export default function App() {
   return (
