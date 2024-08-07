@@ -83,8 +83,30 @@ const Signup = () => {
             </svg>
             <input type="Password" placeholder="Confirm password" />
           </label>
+          <div className="flex justify-start  text-center gap-4 ps-2">
+            <label className="flex justify-center items-center text-center gap-4">
+              <input
+                type="radio"
+                name="gender"
+                value="male"
+                className="radio"
+                defaultChecked
+              />
+              Male
+            </label>
+
+            <label className="flex justify-center items-center text-center gap-4">
+              <input
+                type="radio"
+                name="gender"
+                value="female"
+                className="radio"
+              />
+              Female
+            </label>
+          </div>
           <div className="pt-5">
-          <button className="btn btn-outline">Signup</button>
+            <button className="btn btn-outline">Signup</button>
           </div>
         </form>
       </div>
