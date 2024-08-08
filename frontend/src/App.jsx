@@ -7,7 +7,7 @@ import "./App.scss";
 export default function App() {
   return (
     <div className="p-4 flex items-center h-screen justify-center ">
-      <Signup />
+      <Home />
       <div className="lines z-0">
         <div className="line"></div>
         <div className=""></div>
