@@ -1,6 +1,7 @@
 // pages/Signup.js
 import React, { useState } from 'react';
 import Input from '../../components/Basic/Input';
+import GenderInput from '../../components/Basic/GenderInput';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    gender: 'male',
+    gender: 'Male',
   });
 
   console.log(formData.gender);
@@ -139,32 +140,11 @@ const Signup = () => {
               </svg>
             }
           />
+            <div className="flex justify-start text-center gap-4 ps-2">
+            <GenderInput  handleChange={handleChange} gender={"Male"} comparison={formData.gender === "Male"}/>
+            <GenderInput handleChange={handleChange} gender={"Female"} comparison={formData.gender === "Female"}/>
+            </div>
 
-          <div className="flex justify-start text-center gap-4 ps-2">
-            <label className="flex justify-center items-center text-center gap-4">
-              <input
-                type="radio"
-                name="gender"
-                value="male"
-                className="radio"
-                checked={formData.gender === 'male'}
-                onChange={handleChange}
-              />
-              Male
-            </label>
-
-            <label className="flex justify-center items-center text-center gap-4">
-              <input
-                type="radio"
-                name="gender"
-                value="female"
-                className="radio"
-                checked={formData.gender === 'female'}
-                onChange={handleChange}
-              />
-              Female
-            </label>
-          </div>
 
           <div className="pt-5">
             <button type="submit" className="w-1/2 btn btn-outline">Signup</button>
