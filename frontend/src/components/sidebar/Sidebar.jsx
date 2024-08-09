@@ -1,6 +1,6 @@
 import React from "react";
 import Searchinput from "./Searchinput";
-import Conversations from "./Conversation";
+import Conversations from "./Conversations";
 
 const Sidebar = () => {
   return (
