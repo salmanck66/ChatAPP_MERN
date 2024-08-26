@@ -1,19 +1,43 @@
-// pages/Login.js
-import React from 'react';
+import React, { useState } from 'react';
 import Input from '../../components/Basic/Input';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
+  // State to track the form data
+  const [formData, setFormData] = useState({
+    userName: '',
+    password: '',
+  });
+console.log(formData)
+  // Handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add logic to handle login (e.g., send data to the server)
+    console.log('Form submitted:', formData);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-w-80 sm:min-w-96 z-40">
       <div className="w-full p-4 rounded-lg shadow-md bg-orange-900 text-center glass backdrop-blur-3xl bg-opacity-0 bg-clip-padding">
         <h1 className="text-3xl text-gray-300 font-semibold py-6">
           Login <span className="text-slate-400 font-thin">chatWAER</span>
         </h1>
-        <form className="pb-5 flex flex-col gap-4" action="">
+        <form className="pb-5 flex flex-col gap-4" onSubmit={handleSubmit}>
           <Input
             type="text"
             placeholder="User name"
+            value={formData.userName}
+            onChange={handleChange}
+            name="userName"
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -29,6 +53,9 @@ const Login = () => {
           <Input
             type="password"
             placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            name="password"
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
