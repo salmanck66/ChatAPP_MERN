@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Input from '../../components/Basic/Input';
 import GenderInput from '../../components/Basic/GenderInput';
 import { Link } from 'react-router-dom';
+import useSignup from '../../hooks/useSignup';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -10,22 +11,22 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    gender: '',
+    gender: 'Male',
   });
+
+  const {loading, signup} = useSignup();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    console.log(`Input name: ${name}, Input value: ${value}`);
     setFormData({
       ...formData,
       [name]: type === 'radio' ? (checked ? value : formData[name]) : value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    await signup(formData);  // Use the signup function from useSignup hook
   };
 
   return (
@@ -155,17 +156,13 @@ const Signup = () => {
           </div>
 
           <div className="pt-5">
-            <button type="submit" className="w-1/2 btn btn-outline">
-              Signup
+            <button type="submit" className="w-full bg-orange-600 py-2 px-4 rounded text-white hover:bg-orange-700">
+              {loading ? 'Signing up...' : 'Sign up'}
             </button>
           </div>
         </form>
-        <div className="pb-4">
-          <Link to="/login"
-            className="text-gray-600 hover:text-gray-500 hover:underline"
-          >
-            Already having an account?
-          </Link>
+        <div className="text-white font-light text-sm">
+          <p>Already have an account? <Link to="/login" className="text-sky-500">Login</Link></p>
         </div>
       </div>
     </div>
