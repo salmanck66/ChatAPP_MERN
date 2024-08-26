@@ -5,11 +5,11 @@ const protectRoute = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized,no token" });
+      return res.status(401).json({ error: "Unauthorized, no token" });
     }
     const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
     if (!verifiedToken) {
-      return res.status(401).json({ error: "invalid" });
+      return res.status(401).json({ error: "Invalid token" });
     }
     const user = await User.findById(verifiedToken.userid).select("-password");
     if (!user) {
@@ -18,9 +18,8 @@ const protectRoute = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log(error.message, "Error in message middle ware ");
-
-    res.status(500).json({ error: "internal server error" });
+    console.error("Error in protectRoute middleware:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

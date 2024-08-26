@@ -3,11 +3,11 @@ import React from "react";
 const Conversation = () => {
   return (
     <>
-    <div className="flex gap-2 items-center w-72 justify-between hover:bg-sky-500 p-2 py-1 cursor-pointer">
+    <div className="flex gap-2 items-center w-72 justify-between hover:bg-slate-600 p-2 py-1 cursor-pointer">
       
       <div className="avatar online ">
-        <div className="rounded-full size-14 ">
-          <img className="" src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359554_1280.png" alt="user avatar" srcSet="" />
+        <div className="rounded-full  w-12 ">
+          <img className=" hover:size-14" src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359554_1280.png" alt="user avatar" srcSet="" />
         </div>
       </div>
 
