@@ -1,6 +1,7 @@
 // pages/Login.js
 import React from 'react';
 import Input from '../../components/Basic/Input';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   return (
@@ -50,9 +51,9 @@ const Login = () => {
             </button>
           </div>
           <div>
-            <a href="" className="text-gray-600 hover:text-gray-500 hover:underline">
+            <Link to="/signup" className="text-gray-600 hover:text-gray-500 hover:underline">
               Don't have an account?
-            </a>
+            </Link>
           </div>
         </form>
       </div>

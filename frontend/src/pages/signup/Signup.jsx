@@ -1,7 +1,7 @@
-// pages/Signup.js
 import React, { useState } from 'react';
 import Input from '../../components/Basic/Input';
 import GenderInput from '../../components/Basic/GenderInput';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -10,13 +10,12 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    gender: 'Male',
+    gender: '',
   });
-
-  console.log(formData.gender);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    console.log(`Input name: ${name}, Input value: ${value}`);
     setFormData({
       ...formData,
       [name]: type === 'radio' ? (checked ? value : formData[name]) : value,
@@ -26,6 +25,7 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
+    console.log(formData);
   };
 
   return (
@@ -140,21 +140,33 @@ const Signup = () => {
               </svg>
             }
           />
-            <div className="flex justify-start text-center gap-4 ps-2">
-            <GenderInput  handleChange={handleChange} gender={"Male"} comparison={formData.gender === "Male"}/>
-            <GenderInput handleChange={handleChange} gender={"Female"} comparison={formData.gender === "Female"}/>
-            </div>
 
+          <div className="flex justify-start text-center gap-4 ps-2">
+            <GenderInput
+              handleChange={handleChange}
+              gender="Male"
+              comparison={formData.gender === 'Male'}
+            />
+            <GenderInput
+              handleChange={handleChange}
+              gender="Female"
+              comparison={formData.gender === 'Female'}
+            />
+          </div>
 
           <div className="pt-5">
-            <button type="submit" className="w-1/2 btn btn-outline">Signup</button>
+            <button type="submit" className="w-1/2 btn btn-outline">
+              Signup
+            </button>
           </div>
         </form>
-        <div className='pb-4'>
-            <a href="" className=" text-gray-600 hover:text-gray-500 hover:underline">
-              Already having an account?
-            </a>
-          </div>
+        <div className="pb-4">
+          <Link to="/login"
+            className="text-gray-600 hover:text-gray-500 hover:underline"
+          >
+            Already having an account?
+          </Link>
+        </div>
       </div>
     </div>
   );

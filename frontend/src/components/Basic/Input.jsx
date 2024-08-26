@@ -1,31 +1,19 @@
 import React from 'react'
 
-const Input = ({type,placeholder,icon}) => {
+const Input = ({type, placeholder, value, onChange, name, icon}) => {
   return (
-    <><label className="input input-bordered flex items-center gap-2">
-    {/* <svg
-      class="w-[16px] h-[16px] text-gray-800 dark:text-slate-300"
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill-rule="evenodd"
-        d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z"
-        clip-rule="evenodd"
-      />
-    </svg> */}
+    <><label className="input input-bordered flex items-center gap-2"> 
     {
         icon
     }
-
-    <input type={type} className="grow " placeholder={placeholder} />
+    <input className="grow " type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        name={name}
+         />
   </label>
     </>
   )
 }
-
 export default Input
