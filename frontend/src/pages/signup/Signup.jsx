@@ -157,7 +157,7 @@ const Signup = () => {
 
           <div className="pt-5">
             <button type="submit" className="w-full bg-orange-600 py-2 px-4 rounded text-white hover:bg-orange-700">
-              {loading ? 'Signing up...' : 'Sign up'}
+              {loading ? <span className='loading loading-spinner'>'Signing up...'</span>  : 'Sign up'}
             </button>
           </div>
         </form>

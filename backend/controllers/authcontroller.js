@@ -63,6 +63,10 @@ export const login = async (req, res) => {
   try {
     const { userName, password } = req.body;
     const user = await User.findOne({ userName });
+    if(userName.includes('@'))
+    {
+      return res.status(400).json({ error: "Please login with username only" });
+    }
     
     if (!user) {
       return res.status(400).json({ error: "User does not exist" });

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useAuthContext } from '../context/AuthContext';
 
 const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const {setAuthUser} = useAuthContext()
 
   const handleInputError = ({ fullName, userName, confirmPassword, email, password, gender }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,10 +63,10 @@ const useSignup = () => {
       }
 
       const data = await res.json();
+      setAuthUser(data)
       setSuccess(true);
       toast.success('Signup successful!');
-      console.log(data);
-
+      localStorage.setItem('chat-user',JSON.stringify(data))
     } catch (err) {
       const errorMessage = err.message || 'An unexpected error occurred. Please try again later.';
       setError(errorMessage);
