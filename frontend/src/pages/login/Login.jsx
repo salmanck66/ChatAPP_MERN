@@ -89,9 +89,12 @@ const Login = () => {
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>
-          <div>
+          <div className='flex flex-col'>
             <Link to="/signup" className="text-gray-600 hover:text-gray-500 hover:underline">
               Don't have an account?
+            </Link>
+            <Link to="/resetpassword" className="text-gray-600 hover:text-gray-500 hover:underline">
+              Forgot password?
             </Link>
           </div>
         </form>

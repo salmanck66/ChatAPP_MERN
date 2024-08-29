@@ -1,6 +1,8 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import genToken from "../utils/tokenGen.js";
+import transporter from "../utils/SendMail.js";
+
 
 export const signup = async (req, res) => {
   try {
@@ -102,4 +104,73 @@ export const logout = (req, res) => {
   }
 };
 
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { resetToken, newPassword, confirmNewPassword } = req.body;
+
+    // Check if passwords match
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ error: "Passwords do not match" });
+    }
+
+    // Find user by reset token
+    const user = await User.findOne({
+      resetToken,
+      resetTokenExpiry: { $gt: Date.now() }, // Check if token is still valid
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid or expired reset token" });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset successfully" });
+
+  } catch (error) {
+    console.error("Error in resetting password:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ error: "User does not exist" });
+    }
+
+    // Generate a reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = Date.now() + 3600000; // Token valid for 1 hour
+    await user.save();
+
+    // Send the reset token to user's email
+    const resetURL = `http://yourfrontend.com/reset-password/${resetToken}`;
+    await transporter.sendMail({
+      to: user.email,
+      from: 'your-email@gmail.com',
+      subject: 'Password Reset Request',
+      html: `<p>You requested a password reset. Click <a href="${resetURL}">here</a> to reset your password. The link is valid for 1 hour.</p>`,
+    });
+
+    res.status(200).json({ message: "Password reset email sent" });
+
+  } catch (error) {
+    console.error("Error in requesting password reset:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
