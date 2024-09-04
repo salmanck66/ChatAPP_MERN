@@ -4,15 +4,13 @@ import { Link } from 'react-router-dom';
 import useSignin from '../../hooks/useLogin'; // Correctly importing useSignin hook
 
 const Login = () => {
-  // State to track the form data
   const [formData, setFormData] = useState({
     userName: '',
     password: '',
   });
   
-  const { signin, loading } = useSignin(); // Correct hook method
+  const { signin, loading } = useSignin();
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -21,7 +19,6 @@ const Login = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     await signin({
@@ -29,7 +26,6 @@ const Login = () => {
       password: formData.password,
     });
 
-    // Add logic to handle login (e.g., send data to the server)
     console.log('Form submitted:', formData);
   };
 
@@ -80,12 +76,15 @@ const Login = () => {
             }
           />
 
-          <div className="pt-2">
+          <div className="pt-2 flex items-center justify-center">
             <button
               type="submit"
-              className={`btn btn-outline w-1/2 ${loading ? 'loading' : ''}`}
+              className={`btn btn-outline w-1/2 flex items-center justify-center ${loading ? 'loading' : ''}`}
               disabled={loading}
             >
+              {loading ? (
+                <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full mr-2"></div>
+              ) : null}
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>
@@ -93,7 +92,7 @@ const Login = () => {
             <Link to="/signup" className="text-gray-600 hover:text-gray-500 hover:underline">
               Don't have an account?
             </Link>
-            <Link to="/resetpassword" className="text-gray-600 hover:text-gray-500 hover:underline">
+            <Link to="/reset" className="text-gray-600 hover:text-gray-500 hover:underline">
               Forgot password?
             </Link>
           </div>

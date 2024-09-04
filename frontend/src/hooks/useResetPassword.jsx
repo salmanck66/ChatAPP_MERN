@@ -10,7 +10,7 @@ const useResetPassword = () => {
     setError(null);
 
     try {
-      const res = await fetch('/api/auth/reset-password', {
+      const res = await fetch('/api/auth/resetpasswordrequest', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

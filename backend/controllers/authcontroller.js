@@ -2,13 +2,14 @@ import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import genToken from "../utils/tokenGen.js";
 import transporter from "../utils/SendMail.js";
-
+import crypto from 'crypto'
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, userName, email, password, confirmPassword, gender } = req.body;
-    console.log(req.body)
-    console.log(password,confirmPassword)
+    const { fullName, userName, email, password, confirmPassword, gender } =
+      req.body;
+    console.log(req.body);
+    console.log(password, confirmPassword);
 
     // Validate passwords match
     if (password !== confirmPassword) {
@@ -51,25 +52,20 @@ export const signup = async (req, res) => {
       email: newUser.email,
       profilePic: newUser.profilePic,
     });
-
   } catch (error) {
     console.error("Error during signup:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-
-
-
 export const login = async (req, res) => {
   try {
     const { userName, password } = req.body;
     const user = await User.findOne({ userName });
-    if(userName.includes('@'))
-    {
+    if (userName.includes("@")) {
       return res.status(400).json({ error: "Please login with username only" });
     }
-    
+
     if (!user) {
       return res.status(400).json({ error: "User does not exist" });
     }
@@ -93,17 +89,15 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const logout = (req, res) => {
   try {
-    res.cookie('jwt', '', { maxAge: 0 });
+    res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 export const resetPassword = async (req, res) => {
   try {
@@ -135,7 +129,6 @@ export const resetPassword = async (req, res) => {
     await user.save();
 
     res.status(200).json({ message: "Password has been reset successfully" });
-
   } catch (error) {
     console.error("Error in resetting password:", error.message);
     res.status(500).json({ error: "Internal server error" });
@@ -144,33 +137,38 @@ export const resetPassword = async (req, res) => {
 
 export const requestPasswordReset = async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
+    let user;
+    const { identifier } = req.body;
 
-    if (!user) {
-      return res.status(400).json({ error: "User does not exist" });
+    if (identifier.includes("@")) {
+      user = await User.findOne({email : identifier });
+    } else
+    {
+      user = await User.findOne({userName : identifier });
     }
 
+      if (!user) {
+        return res.status(400).json({ error: "User does not exist" });
+      }
+
     // Generate a reset token
-    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetToken = crypto.randomBytes(32).toString("hex");
     user.resetToken = resetToken;
     user.resetTokenExpiry = Date.now() + 3600000; // Token valid for 1 hour
     await user.save();
 
     // Send the reset token to user's email
-    const resetURL = `http://yourfrontend.com/reset-password/${resetToken}`;
+    const resetURL = `http://localhost:3001/reset-password/${resetToken}`;
     await transporter.sendMail({
       to: user.email,
-      from: 'your-email@gmail.com',
-      subject: 'Password Reset Request',
+      from: process.env.EMAIL,
+      subject: "Password Reset Request",
       html: `<p>You requested a password reset. Click <a href="${resetURL}">here</a> to reset your password. The link is valid for 1 hour.</p>`,
     });
 
     res.status(200).json({ message: "Password reset email sent" });
-
   } catch (error) {
     console.error("Error in requesting password reset:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-

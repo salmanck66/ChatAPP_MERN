@@ -37,7 +37,7 @@ const ResetPassword = () => {
         <form className="pb-5 flex flex-col gap-4" onSubmit={handleSubmit}>
           <Input
             type="text"
-            placeholder="Email, Phone Number, or Username"
+            placeholder="Email or Username"
             value={formData.identifier}
             onChange={handleChange}
             name="identifier"
