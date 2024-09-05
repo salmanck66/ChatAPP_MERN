@@ -1,13 +1,15 @@
 import User from "../models/user.js";
 
-export const getUserSideBar = async (req, res) => {
+export const getUsersForSidebar = async (req, res) => {
   try {
-    const myuser = req.user._id;
-    const usersexeptme = await User.find({_id:{$ne:myuser}}).select("-password");
+    const loggedInUserId = req.user._id;
 
-    res.status(200).json({usersexeptme})
+    const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+
+    res.status(200).json(filteredUsers);
   } catch (error) {
-    console.log("Error in user", error.message);
-    res.status(500).json({ error });
+    console.error("Error in getUsersForSidebar: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
+
