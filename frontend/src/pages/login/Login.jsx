@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import Input from '../../components/Basic/Input';
-import { Link } from 'react-router-dom';
-import useSignin from '../../hooks/useLogin'; // Correctly importing useSignin hook
+import React, { useState } from "react";
+import Input from "../../components/Basic/Input";
+import { Link } from "react-router-dom";
+import useSignin from "../../hooks/useLogin"; // Correctly importing useSignin hook
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    userName: '',
-    password: '',
+    userName: "",
+    password: "",
   });
-  
+
   const { signin, loading } = useSignin();
 
   const handleChange = (e) => {
@@ -26,7 +26,7 @@ const Login = () => {
       password: formData.password,
     });
 
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
   };
 
   return (
@@ -76,23 +76,29 @@ const Login = () => {
             }
           />
 
-          <div className="pt-2 flex items-center justify-center">
+          <div className="pt-5">
             <button
               type="submit"
-              className={`btn btn-outline w-1/2 flex items-center justify-center ${loading ? 'loading' : ''}`}
-              disabled={loading}
+              className="w-full h-10 flex justify-center items-center bg-slate-900 py-2 px-4 rounded text-white hover:bg-slate-800"
             >
               {loading ? (
-                <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full mr-2"></div>
-              ) : null}
-              {loading ? 'Logging in...' : 'Login'}
+                <span className="loading loading-spinner">Signing in...</span>
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
-          <div className='flex flex-col'>
-            <Link to="/signup" className="text-gray-600 hover:text-gray-500 hover:underline">
+          <div className="flex flex-col">
+            <Link
+              to="/signup"
+              className="text-gray-600 hover:text-gray-500 hover:underline"
+            >
               Don't have an account?
             </Link>
-            <Link to="/reset" className="text-gray-600 hover:text-gray-500 hover:underline">
+            <Link
+              to="/reset"
+              className="text-gray-600 hover:text-gray-500 hover:underline"
+            >
               Forgot password?
             </Link>
           </div>

@@ -1,26 +1,49 @@
-import React from "react";
-import Input from "../Basic/Input";
+import { useState } from "react";
+import { IoSearchSharp } from "react-icons/io5";
+import useConversation from "../../store/useConversation";
+import useGetConversations from "../../hooks/useGetConversations";
+import toast from "react-hot-toast";
 
-const Searchinput = () => {
+const SearchInput = () => {
+  const [search, setSearch] = useState("");
+  const { setselectedConversation } = useConversation();
+  const { conversations, loading } = useGetConversations();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (loading) return; // Prevent submission while loading
+    if (!search) return;
+    if (search.length < 3) {
+      return toast.error("Search term must be at least 3 characters long");
+    }
+
+    const conversation = conversations.find((c) =>
+      c.fullName.toLowerCase().includes(search.toLowerCase())
+    );
+    console.log(conversation)
+    if (conversation) {
+      setselectedConversation(conversation);
+      setSearch("");
+    } else {
+      toast.error("No such user found!");
+    }
+  };
+
   return (
-    <form className="flex items-center gap-2 backdrop-blur">
-      <label className="input input-bordered rounded-full flex items-center gap-2">
-        <input type="text" className="grow " placeholder="Search" />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          className="h-4 w-4 opacity-70"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </label>
+    <form onSubmit={handleSubmit} className='flex items-center gap-2'>
+      <input
+        type='text'
+        placeholder='Search…'
+        className='input input-bordered rounded-full'
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        disabled={loading} // Disable input while loading
+      />
+      <button type='submit' className='btn btn-circle bg-sky-500 text-white' disabled={loading}>
+        <IoSearchSharp className='w-6 h-6 outline-none' />
+      </button>
     </form>
   );
 };
 
-export default Searchinput;
+export default SearchInput;

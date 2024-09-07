@@ -155,8 +155,9 @@ const Signup = () => {
             />
           </div>
 
-          <div className="pt-5">
-            <button type="submit" className="w-full bg-orange-600 py-2 px-4 rounded text-white hover:bg-orange-700">
+          <div className="pt-1">
+            <button type="submit"               className="w-full h-10 flex justify-center items-center bg-slate-900 py-2 px-4 rounded text-white hover:bg-slate-800"
+            >
               {loading ? <span className='loading loading-spinner'>'Signing up...'</span>  : 'Sign up'}
             </button>
           </div>
