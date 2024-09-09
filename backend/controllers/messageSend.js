@@ -1,17 +1,21 @@
 import Conversation from "../models/conversation.js";
 import Message from "../models/message.js";
+import { getRecieverSocketId } from "../socket/socket.js";
+import { io } from "../socket/socket.js"; // Make sure to import io if it's not globally available
 
 export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
-    const recieverId = req.params.id;
-    const senderId = req.user._id;
-    console.log(recieverId, senderId, message);
+    const recieverId = req.params.id; // The recipient of the message
+    const senderId = req.user._id; // The sender is derived from the authenticated user
+    console.log("Sender:", senderId, "Reciever:", recieverId, "Message:", message);
 
+    // Validate message content
     if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+      return res.status(400).json({ error: 'Message content is required' });
     }
 
+    // Find an existing conversation or create a new one
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, recieverId] },
     });
@@ -22,6 +26,7 @@ export const sendMessage = async (req, res) => {
       });
     }
 
+    // Create a new message
     const newMessage = new Message({
       senderId,
       recieverId,
@@ -29,15 +34,22 @@ export const sendMessage = async (req, res) => {
     });
 
     if (newMessage) {
-      conversation.messages.push(newMessage._id);
+      conversation.messages.push(newMessage._id); // Add the message to the conversation
     }
 
-    await Promise.all([conversation.save(), newMessage.save()]); // Fixed Promise.all usage
+    // Get the recipient's socket ID
+    const RecSocketId = getRecieverSocketId(recieverId);
+    if (RecSocketId) {
+      io.to(RecSocketId).emit('newMessage', newMessage); // Emit the message in real-time to the recipient
+    }
+
+    // Save the conversation and message simultaneously
+    await Promise.all([conversation.save(), newMessage.save()]);
 
     res.status(201).json(newMessage);
   } catch (error) {
-    console.log(error.message, "error in sendMessage");
-    res.status(500).json({ error: 'Internal server error' }); // Added error response
+    console.error(error.message, "error in sendMessage");
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -47,7 +59,7 @@ export const getMessage = async (req, res) => {
     const { id: userToChatId } = req.params;
     const senderId = req.user._id;
 
-    // Fetch the conversation where both sender and receiver are participants
+    // Fetch the conversation where both the sender and receiver are participants
     const conversation = await Conversation.findOne({
       participants: { $all: [senderId, userToChatId] },
     }).populate("messages");
@@ -64,4 +76,3 @@ export const getMessage = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
