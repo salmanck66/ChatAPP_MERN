@@ -9,4 +9,10 @@ export default {
     extend: {},
   },
   plugins: [daisyui],
+  purge: {
+    content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+    options: {
+      safelist: ['shake', 'message-shake'], // Add your custom classes here
+    },
+  }
 }
