@@ -158,7 +158,7 @@ export const requestPasswordReset = async (req, res) => {
     await user.save();
 
     // Send the reset token to user's email
-    const resetURL = `http://localhost:3001/reset-password/${resetToken}`;
+    const resetURL = `https://chatwaer-free-and-comprehensive-chat.onrender.com/reset-password/${resetToken}`;
     await transporter.sendMail({
       to: user.email,
       from: process.env.EMAIL,
