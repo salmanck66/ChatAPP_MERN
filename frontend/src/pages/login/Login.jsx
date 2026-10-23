@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Input from "../../components/Basic/Input";
 import { Link } from "react-router-dom";
 import useSignin from "../../hooks/useLogin"; // Correctly importing useSignin hook
@@ -26,7 +26,6 @@ const Login = () => {
       password: formData.password,
     });
 
-    console.log("Form submitted:", formData);
   };
 
   return (
@@ -82,18 +81,37 @@ const Login = () => {
               className="w-full h-10 flex justify-center items-center bg-slate-900 py-2 px-4 rounded text-white hover:bg-slate-800"
             >
               {loading ? (
-                <span className="loading loading-spinner">Signing in...</span>
+                <span className="loading loading-spinner" />
               ) : (
                 "Sign in"
               )}
             </button>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-xs text-gray-400">Just looking? Try a demo account — open a second window as the other one to chat live.</p>
+            <div className="flex gap-2">
+              {[
+                ["demo_alex", "Alex"],
+                ["demo_sam", "Sam"],
+              ].map(([user, label]) => (
+                <button
+                  key={user}
+                  type="button"
+                  disabled={loading}
+                  onClick={() => signin({ userName: user, password: "demo1234" })}
+                  className="btn btn-sm btn-outline flex-1"
+                >
+                  Demo as {label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex flex-col">
             <Link
               to="/signup"
               className="text-gray-600 hover:text-gray-500 hover:underline"
             >
-              Don't have an account?
+              Don&apos;t have an account?
             </Link>
             <Link
               to="/reset"

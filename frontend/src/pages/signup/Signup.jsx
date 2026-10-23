@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Input from '../../components/Basic/Input';
 import GenderInput from '../../components/Basic/GenderInput';
 import { Link } from 'react-router-dom';
@@ -158,7 +158,7 @@ const Signup = () => {
           <div className="pt-1">
             <button type="submit"               className="w-full h-10 flex justify-center items-center bg-slate-900 py-2 px-4 rounded text-white hover:bg-slate-800"
             >
-              {loading ? <span className='loading loading-spinner'>'Signing up...'</span>  : 'Sign up'}
+              {loading ? <span className='loading loading-spinner' />  : 'Sign up'}
             </button>
           </div>
         </form>

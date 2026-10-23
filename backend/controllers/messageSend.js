@@ -1,78 +1,61 @@
+import mongoose from "mongoose";
 import Conversation from "../models/conversation.js";
 import Message from "../models/message.js";
-import { getRecieverSocketId } from "../socket/socket.js";
-import { io } from "../socket/socket.js"; // Make sure to import io if it's not globally available
+import User from "../models/user.js";
+import { emitToUser } from "../socket/socket.js";
+
+const MAX_MESSAGE_LENGTH = 2000;
 
 export const sendMessage = async (req, res) => {
   try {
-    const { message } = req.body;
-    const recieverId = req.params.id; // The recipient of the message
-    const senderId = req.user._id; // The sender is derived from the authenticated user
-    console.log("Sender:", senderId, "Reciever:", recieverId, "Message:", message);
+    const message = typeof req.body.message === "string" ? req.body.message.trim() : "";
+    const recieverId = req.params.id;
+    const senderId = req.user._id;
 
-    // Validate message content
-    if (!message) {
-      return res.status(400).json({ error: 'Message content is required' });
+    if (!message) return res.status(400).json({ error: "Message content is required" });
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return res.status(400).json({ error: `Message must be under ${MAX_MESSAGE_LENGTH} characters` });
+    }
+    if (!mongoose.isValidObjectId(recieverId) || senderId.equals(recieverId)) {
+      return res.status(400).json({ error: "Invalid recipient" });
+    }
+    if (!(await User.exists({ _id: recieverId }))) {
+      return res.status(404).json({ error: "Recipient not found" });
     }
 
-    // Find an existing conversation or create a new one
     let conversation = await Conversation.findOne({
-      participants: { $all: [senderId, recieverId] },
+      participants: { $all: [senderId, recieverId], $size: 2 },
     });
-
     if (!conversation) {
-      conversation = await Conversation.create({
-        participants: [senderId, recieverId],
-      });
+      conversation = await Conversation.create({ participants: [senderId, recieverId] });
     }
 
-    // Create a new message
-    const newMessage = new Message({
-      senderId,
-      recieverId,
-      message,
-    });
+    const newMessage = await Message.create({ senderId, recieverId, message });
+    await Conversation.updateOne({ _id: conversation._id }, { $push: { messages: newMessage._id } });
 
-    if (newMessage) {
-      conversation.messages.push(newMessage._id); // Add the message to the conversation
-    }
-
-    // Get the recipient's socket ID
-    const RecSocketId = getRecieverSocketId(recieverId);
-    if (RecSocketId) {
-      io.to(RecSocketId).emit('newMessage', newMessage); // Emit the message in real-time to the recipient
-    }
-
-    // Save the conversation and message simultaneously
-    await Promise.all([conversation.save(), newMessage.save()]);
-
+    // Emit only after the message is persisted
+    emitToUser(recieverId, "newMessage", newMessage);
     res.status(201).json(newMessage);
   } catch (error) {
-    console.error(error.message, "error in sendMessage");
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error in sendMessage:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 export const getMessage = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
-    const senderId = req.user._id;
-
-    // Fetch the conversation where both the sender and receiver are participants
-    const conversation = await Conversation.findOne({
-      participants: { $all: [senderId, userToChatId] },
-    }).populate("messages");
-
-    // If no conversation is found, respond with an empty array
-    if (!conversation) {
-      return res.status(200).json([]);
+    if (!mongoose.isValidObjectId(userToChatId)) {
+      return res.status(400).json({ error: "Invalid user" });
     }
 
-    // Return the messages if the conversation is found
-    res.status(200).json(conversation.messages);
+    const conversation = await Conversation.findOne({
+      participants: { $all: [req.user._id, userToChatId], $size: 2 },
+    }).populate("messages");
+
+    res.status(200).json(conversation ? conversation.messages : []);
   } catch (error) {
-    console.log("Error in getMessage controller:", error.message);
+    console.error("Error in getMessage:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };

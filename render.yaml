@@ -1,0 +1,26 @@
+# Render Blueprint — one web service serves both the API/WebSocket server and the built React app.
+# Deploy: https://render.com/deploy?repo=https://github.com/salmanck66/ChatAPP_MERN
+services:
+  - type: web
+    name: chatwaer
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      - key: DEMO_MODE
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_CONNECTION
+        sync: false # paste your MongoDB Atlas connection string when prompted
+      - key: EMAIL
+        sync: false # optional — Gmail address for password-reset emails
+      - key: EMAIL_PASSWORD
+        sync: false # optional — Gmail App Password

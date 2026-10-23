@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Input from "../../components/Basic/Input";
 import { Link } from "react-router-dom";
 import useResetPassword from "../../hooks/useResetPassword";
@@ -24,7 +24,6 @@ const ResetPassword = () => {
       identifier: formData.identifier,
     });
 
-    console.log("Password reset requested for:", formData.identifier);
   };
 
   return (

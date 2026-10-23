@@ -7,35 +7,33 @@ const SocketContext = createContext();
 export const useSocketContext = () => useContext(SocketContext);
 
 export const SocketContextProvider = ({ children }) => {
-    const [socket, setSocket] = useState(null);
-    const [onlineUsers, setOnlineUsers] = useState([]);
-    const { authUser } = useAuthContext();
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const { authUser, clearSession } = useAuthContext();
 
-    useEffect(() => {
-        if (authUser) {
-            const socketInstance = io("https://chatwaer-free-and-comprehensive-chat.onrender.com/", {
-                query: { userId: authUser._id },
-            });
+  useEffect(() => {
+    if (!authUser) return;
 
-            setSocket(socketInstance);
+    // Same origin as the API; the server authenticates the socket from the httpOnly JWT cookie
+    const socketInstance = io({ withCredentials: true });
 
-            socketInstance.on("getOnlineUsers", (users) => {
-                setOnlineUsers(users);
-            });
+    socketInstance.on("getOnlineUsers", setOnlineUsers);
+    socketInstance.on("connect_error", (err) => {
+      if (err.message === "Unauthorized") clearSession();
+    });
 
-            return () => {
-                socketInstance.disconnect(); // Properly close connection
-                setSocket(null);
-            };
-        } else if (socket) {
-            socket.disconnect(); // Disconnect if no authUser
-            setSocket(null);
-        }
-    }, [authUser]);
+    setSocket(socketInstance);
 
-    return (
-        <SocketContext.Provider value={{ socket, onlineUsers }}>
-            {children}
-        </SocketContext.Provider>
-    );
+    return () => {
+      socketInstance.disconnect();
+      setSocket(null);
+      setOnlineUsers([]);
+    };
+  }, [authUser, clearSession]);
+
+  return (
+    <SocketContext.Provider value={{ socket, onlineUsers }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
