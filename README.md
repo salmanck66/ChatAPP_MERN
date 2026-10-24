@@ -11,7 +11,8 @@
 ![Socket.IO](https://img.shields.io/badge/Socket.IO-4-010101?logo=socketdotio&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-<!-- LIVE-DEMO -->
+**[▶ Live demo — chatwaer.onrender.com](https://chatwaer.onrender.com/)**  
+<sub>Click <b>Demo as Alex</b>, then open a private window and click <b>Demo as Sam</b> to chat between them in real time.<br>Hosted on Render's free tier, so the first load after a quiet spell can take ~50 seconds to wake up.</sub>
 
 <img src="docs/screenshots/desktop-chat.png" alt="chatWAER desktop chat view" width="820">
 
